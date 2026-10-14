@@ -26,11 +26,13 @@ class ProfileActivity : ComponentActivity() {
         val activity = this
         // Read the extra named "name". If screen 1 sent nothing, use Guest. No !!.
         val name = intent.getStringExtra("name") ?: "Guest"
+        val npm = intent.getStringExtra("npm") ?: "-"
         setContent {
             KampusGoTheme {
                 Column(modifier = Modifier.padding(24.dp)) {
                     // Show the name that traveled inside the Intent.
                     Text(text = "Hello, $name")
+                    Text(text = "$npm")
                     Button(onClick = {
                         // Implicit Intent: do not name an Activity. Ask the phone for a dialer.
                         val dial = Intent(Intent.ACTION_DIAL, Uri.parse("tel:0211234567"))
@@ -41,6 +43,32 @@ class ProfileActivity : ComponentActivity() {
                         }
                     }) {
                         Text("Call campus")
+                    }
+                    Button(onClick = {
+                        // Implicit Intent: do not name an Activity. Open the SGU Webpage.
+                        val webpage: Uri = Uri.parse("https://sgu.ac.id")
+                        val intent = Intent(Intent.ACTION_VIEW, webpage)
+                        try {
+                            activity.startActivity(intent)
+                        } catch (e: ActivityNotFoundException) {
+                            Toast.makeText(activity, "Webpage not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }) {
+                        Text("SGU Webpage")
+                    }
+                    Button(onClick = {
+                        // Implicit Intent: do not name an Activity. Open the SGU Webpage.
+                        // Format: geo:0,0?q=query+string
+                        val gmmIntentUri = Uri.parse("geo:106.65515,-6.22535")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        try {
+                            activity.startActivity(mapIntent)
+                        } catch (e: ActivityNotFoundException) {
+                            Toast.makeText(activity, "Location not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }) {
+                        Text("SGU Location")
                     }
                 }
             }
